@@ -22,8 +22,10 @@ def remove_ghibli_style(prompts: list):
     Given a list of prompts, extract duplication like "Ghibli" or "Anime-style"
     """
     for prompt in prompts:
-        prompt = regex.sub(r'Ghibli-\S+', '', prompt)
-        prompt = regex.sub(r'Anime-style-\S+', '', prompt)
+        prompt = regex.sub(r'*Ghibli*', '', prompt)
+        prompt = regex.sub(r'*Anime*', '', prompt)
+        prompt = regex.sub(r'*inspired*', '', prompt)
+        prompt = regex.sub(r'*style *', '', prompt)
     print(prompts)
     return prompts
 
