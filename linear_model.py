@@ -29,11 +29,33 @@ def calculate_carbon_emissions(gpu_usage, duration):
 # Adding a new column to the dataframe
 df = pd.DataFrame(v.df)
 df.loc[:, 'carbon_emissions'] = calculate_carbon_emissions(df['gpu_usage'], df['generation_time'])
-plt.scatter(df['gpu_usage'], df['carbon_emissions'])
-plt.xlabel("GPU_usage")
-plt.ylabel("Carbon Emissions")
-plt.title("GPU Usage by Carbon Emissions")
+
+freq = df.groupby(['gpu_usage', 'carbon_emissions']).size().reset_index(name='count')
+plt.figure(figsize=(8, 6))
+scatter = plt.scatter(
+    freq['gpu_usage'],
+    freq['carbon_emissions'],
+    s=freq['count'] * 100,  # size scaled by count
+    c=freq['count'],        # color mapped to count
+    cmap='viridis',
+    alpha=0.6,
+    edgecolors='k'
+)
+
+plt.colorbar(scatter, label='Frequency')
+plt.xlabel('gpu_usage')
+plt.ylabel('carbon_emissions')
+plt.title('GPU_Usage by Carbon Emissions')
+plt.grid(True)
 plt.show()
+
+# plt.scatter(df['gpu_usage'], df['carbon_emissions'])
+# plt.xlabel("GPU_usage")
+# plt.ylabel("Carbon Emissions")
+# plt.title("GPU Usage by Carbon Emissions")
+# plt.show()
+
+
 formula = 'carbon_emissions ~ gpu_usage + generation_time'
 model = smf.glm(formula=formula, data=df, family=sm.families.Gaussian()) # Gaussian family for linear regression
 result = model.fit()
