@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spirited Emissions</title>
+    <title>Calculator Website</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,6 +19,25 @@
             color: #ffffff;
         }
         
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #111111;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555555;
+        }
+        
         .content-area {
             flex: 1;
             padding: 20px;
@@ -27,7 +46,7 @@
         }
         
         .calculator-container {
-            width: 50%;
+            width: 45%;
             background-color: #111111;
             border-left: 1px solid #333;
             padding: 20px;
@@ -69,22 +88,34 @@
         .results-section {
             display: flex;
             flex-direction: column;
+            height: 100%;
+        }
+        
+        .result-box {
+            background-color: #333;
+            border-radius: 8px;
+            padding: 15px;
             margin-bottom: 20px;
+            text-align: center;
         }
         
-        .results-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #333;
+        .result-label {
+            color: #ff0000;
+            font-size: 18px;
+            margin-bottom: 10px;
         }
         
-        .results-label {
+        .result-value {
+            font-size: 48px;
             font-weight: bold;
+            margin: 10px 0;
         }
         
-        .results-value {
-            text-align: right;
+        .result-description {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 10px;
+            text-align: left;
         }
         
         .speech-bubble {
@@ -155,23 +186,23 @@
             <h1>What is happening</h1>
             
             <div class="speech-bubble">
-                <p>"The carbon footprint of AI is becoming a serious concern as models grow larger and more complex."</p>
-                <div class="quote-reference">Source: Green Tech Journal, 2025</div>
+                <p>“It’s super fun seeing people love images in ChatGPT, but our GPUs are melting"</p>
+                <div class="quote-reference">Source: Sam Altman, CEO of OpenAI</div>
             </div>
             
             <div class="speech-bubble">
-                <p>"Training a single large language model can emit as much carbon as five cars over their entire lifetime."</p>
-                <div class="quote-reference">Source: AI Environmental Impact Report, 2024</div>
+                <p>"We need transparent, robust methods to assess AI’s environmental impacts. Without accurate quantification, it is impossible to mitigate and address these challenges effectively.”</p>
+                <div class="quote-reference">Source: Yuan Yao, Associate Professor of Industrial Ecology and Sustainable Systems, Yale University</div>
             </div>
             
             <div class="speech-bubble">
-                <p>"Companies are now focusing on developing more energy-efficient algorithms to reduce the environmental impact of AI."</p>
-                <div class="quote-reference">Source: Tech Sustainability Forum, 2025</div>
+                <p>“There is still much we don’t know about the environmental impact of AI but some of the data we do have is concerning,”</p>
+                <div class="quote-reference">Source: Golestan (Sally) Radwan (UNEP)</div>
             </div>
             
             <div class="speech-bubble">
-                <p>"The next frontier in AI research is not just capability, but sustainability. We need to make these systems more efficient."</p>
-                <div class="quote-reference">Source: AI Research Conference, 2024</div>
+                <p>"...the training process for a single AI model...can consume thousands of megawatt hours of electricity and emit hundreds of tons of carbon. This is roughly equivalent to the annual carbon emissions of hundreds of households in America."</p>
+                <div class="quote-reference">Source: Harvard Business Review</div>
             </div>
             
             <h2>How did this start?</h2>
@@ -188,22 +219,27 @@
         </div>
         
         <div class="calculator-search">
-            <input type="text" placeholder="Enter your prompt..." id="searchInput">
+            <input type="text" placeholder="Search or enter calculation..." id="searchInput">
         </div>
         
         <div class="calculator-results" id="resultsDisplay">
             <div class="results-section">
-                <div class="results-row">
-                    <div class="results-label">GPU Percentage:</div>
-                    <div class="results-value" id="gpuPercentage">-</div>
+                <div class="result-box">
+                    <div class="result-label">GPU PERCENTAGE</div>
+                    <div class="result-value" id="gpuPercentage">-</div>
                 </div>
-                <div class="results-row">
-                    <div class="results-label">Time taken:</div>
-                    <div class="results-value" id="timeTaken">-</div>
+                
+                <div class="result-box">
+                    <div class="result-label">TIME TAKEN</div>
+                    <div class="result-value" id="timeTaken">-</div>
                 </div>
-                <div class="results-row">
-                    <div class="results-label">Emissions:</div>
-                    <div class="results-value" id="emissions">-</div>
+                
+                <div class="result-box">
+                    <div class="result-label">EMISSIONS</div>
+                    <div class="result-value" id="emissions">-</div>
+                    <div class="result-description" id="emissionsDescription">
+                        This represents the estimated carbon footprint of this calculation.
+                    </div>
                 </div>
             </div>
         </div>
@@ -215,6 +251,7 @@
         const gpuPercentage = document.getElementById('gpuPercentage');
         const timeTaken = document.getElementById('timeTaken');
         const emissions = document.getElementById('emissions');
+        const emissionsDescription = document.getElementById('emissionsDescription');
         
         searchInput.addEventListener('keyup', function(e) {
             if (e.key === 'Enter') {
@@ -227,17 +264,23 @@
                     // Simulate calculation results
                     // Replace these with your actual calculation logic
                     const gpuUsage = Math.floor(Math.random() * 100) + '%';
-                    const time = (Math.random() * 10).toFixed(2) + ' seconds';
-                    const carbonEmissions = (Math.random() * 5).toFixed(3) + ' kg CO2e';
+                    const time = (Math.random() * 10).toFixed(2) + 's';
+                    const carbonEmissions = (Math.random() * 5).toFixed(3);
                     
                     // Update the results display
                     gpuPercentage.textContent = gpuUsage;
                     timeTaken.textContent = time;
-                    emissions.textContent = carbonEmissions;
-                } catch (error) {
+                    emissions.textContent = carbonEmissions + ' kg';
+                    
+                    // Update emissions description with contextual information
+                    const contextText = `This is equivalent to driving a car for approximately ${(carbonEmissions * 4).toFixed(2)} miles.`;
+                    emissionsDescription.textContent = contextText;
+                }
+                catch (error) {
                     gpuPercentage.textContent = 'Error';
                     timeTaken.textContent = 'Error';
                     emissions.textContent = 'Error';
+                    emissionsDescription.textContent = 'An error occurred during calculation.';
                 }
             }
         });
