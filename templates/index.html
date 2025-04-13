@@ -181,22 +181,22 @@
     <!-- Main Content Area (Scrollable) -->
     <div class="content-area">
         <div class="content-section">
-            <img src="./image.png" alt="Featured image" class="content-image" />
+            <img src="{{ url_for('static', filename='image.png') }}" alt="Featured image" class="content-image" />
             
             <h1>What is happening</h1>
             
             <div class="speech-bubble">
-                <p>“It’s super fun seeing people love images in ChatGPT, but our GPUs are melting"</p>
+                <p>"It's super fun seeing people love images in ChatGPT, but our GPUs are melting"</p>
                 <div class="quote-reference">Source: Sam Altman, CEO of OpenAI</div>
             </div>
             
             <div class="speech-bubble">
-                <p>"We need transparent, robust methods to assess AI’s environmental impacts. Without accurate quantification, it is impossible to mitigate and address these challenges effectively.”</p>
+                <p>"We need transparent, robust methods to assess AI's environmental impacts. Without accurate quantification, it is impossible to mitigate and address these challenges effectively."</p>
                 <div class="quote-reference">Source: Yuan Yao, Associate Professor of Industrial Ecology and Sustainable Systems, Yale University</div>
             </div>
             
             <div class="speech-bubble">
-                <p>“There is still much we don’t know about the environmental impact of AI but some of the data we do have is concerning,”</p>
+                <p>"There is still much we don't know about the environmental impact of AI but some of the data we do have is concerning,"</p>
                 <div class="quote-reference">Source: Golestan (Sally) Radwan (UNEP)</div>
             </div>
             
@@ -242,7 +242,7 @@
     </div>
 
     <script>
-        // Basic functionality for the search input
+        // Script for the search input
         const searchInput = document.getElementById('searchInput');
         const gpuPercentage = document.getElementById('gpuPercentage');
         const timeTaken = document.getElementById('timeTaken');
@@ -251,33 +251,41 @@
         
         searchInput.addEventListener('keyup', function(e) {
             if (e.key === 'Enter') {
-                // This is a placeholder for your calculation function
-                // You would replace this with your actual calculation logic
                 const query = searchInput.value;
                 
-                // Simple example of displaying results - replace with your actual function
-                try {
-                    // Simulate calculation results
-                    // Replace these with your actual calculation logic
-                    const gpuUsage = Math.floor(Math.random() * 100) + '%';
-                    const time = (Math.random() * 10).toFixed(2) + 's';
-                    const carbonEmissions = (Math.random() * 5).toFixed(3);
+                // Set loading state
+                gpuPercentage.textContent = "Loading...";
+                timeTaken.textContent = "Loading...";
+                emissions.textContent = "Loading...";
+                emissionsDescription.textContent = "Calculating...";
+                
+                // Send the prompt to the Flask backend
+                fetch('/process_prompt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: query }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
                     
-                    // Update the results display
-                    gpuPercentage.textContent = gpuUsage;
-                    timeTaken.textContent = time;
-                    emissions.textContent = carbonEmissions + ' kg';
-                    
-                    // Update emissions description with contextual information
-                    const contextText = `This is equivalent to driving a car for approximately ${(carbonEmissions * 4).toFixed(2)} miles.`;
-                    emissionsDescription.textContent = contextText;
-                }
-                catch (error) {
+                    // Update the UI with the results
+                    gpuPercentage.textContent = data.gpu_percentage;
+                    timeTaken.textContent = data.time_taken;
+                    emissions.textContent = data.emissions;
+                    emissionsDescription.textContent = data.emissions_description;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                     gpuPercentage.textContent = 'Error';
                     timeTaken.textContent = 'Error';
                     emissions.textContent = 'Error';
-                    emissionsDescription.textContent = 'An error occurred during calculation.';
-                }
+                    emissionsDescription.textContent = 'An error occurred during calculation: ' + error.message;
+                });
             }
         });
     </script>

@@ -24,30 +24,31 @@ def calculate_carbon_emissions(gpu_usage, duration):
     power_draw_W = GPU_TDP_W * usage_percent
     energy_kWh = (power_draw_W * duration_hours) / 1000
     emissions_g = energy_kWh * carbon_intensity_g_per_kWh # returns kWh
+    print(emissions_g)
     return emissions_g
 
 # Adding a new column to the dataframe
-df = pd.DataFrame(v.df)
-df.loc[:, 'carbon_emissions'] = calculate_carbon_emissions(df['gpu_usage'], df['generation_time'])
+# df = pd.DataFrame(v.df)
+# #df.loc[:, 'carbon_emissions'] = calculate_carbon_emissions(df['gpu_usage'], df['generation_time'])
 
-freq = df.groupby(['gpu_usage', 'carbon_emissions']).size().reset_index(name='count')
-plt.figure(figsize=(8, 6))
-scatter = plt.scatter(
-    freq['gpu_usage'],
-    freq['carbon_emissions'],
-    s=freq['count'] * 100,  # size scaled by count
-    c=freq['count'],        # color mapped to count
-    cmap='viridis',
-    alpha=0.6,
-    edgecolors='k'
-)
+# freq = df.groupby(['gpu_usage', 'carbon_emissions']).size().reset_index(name='count')
+# plt.figure(figsize=(8, 6))
+# scatter = plt.scatter(
+#     freq['gpu_usage'],
+#     freq['carbon_emissions'],
+#     s=freq['count'] * 100,  # size scaled by count
+#     c=freq['count'],        # color mapped to count
+#     cmap='viridis',
+#     alpha=0.6,
+#     edgecolors='k'
+# )
 
-plt.colorbar(scatter, label='Frequency')
-plt.xlabel('gpu_usage')
-plt.ylabel('carbon_emissions')
-plt.title('GPU_Usage by Carbon Emissions')
-plt.grid(True)
-plt.show()
+# plt.colorbar(scatter, label='Frequency')
+# plt.xlabel('gpu_usage')
+# plt.ylabel('carbon_emissions')
+# plt.title('GPU_Usage by Carbon Emissions')
+# plt.grid(True)
+# plt.show()
 
 # plt.scatter(df['gpu_usage'], df['carbon_emissions'])
 # plt.xlabel("GPU_usage")
@@ -56,7 +57,7 @@ plt.show()
 # plt.show()
 
 
-formula = 'carbon_emissions ~ gpu_usage + generation_time'
-model = smf.glm(formula=formula, data=df, family=sm.families.Gaussian()) # Gaussian family for linear regression
-result = model.fit()
-print(result.summary())
+# formula = 'carbon_emissions ~ gpu_usage + generation_time'
+# model = smf.glm(formula=formula, data=df, family=sm.families.Gaussian()) # Gaussian family for linear regression
+# result = model.fit()
+# print(result.summary())
