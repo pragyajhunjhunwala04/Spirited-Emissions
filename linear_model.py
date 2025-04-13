@@ -1,5 +1,10 @@
 import requests
 import json
+import pandas as pd
+import statsmodels.formula.api as smf
+import statsmodels.api as sm
+import visualizations as v
+import matplotlib.pyplot as plt
 
 def get_json_details():
     response = requests.get(
@@ -9,8 +14,7 @@ def get_json_details():
         }
     )   
     response = response.json()
-    a = json.loads(response)
-    return a["carbonIntensity"]
+    return response.get("carbonIntensity")
 
 def calculate_carbon_emissions(gpu_usage, duration):
     GPU_TDP_W = 300  # A100 max power in Watts
@@ -19,5 +23,18 @@ def calculate_carbon_emissions(gpu_usage, duration):
     carbon_intensity_g_per_kWh = get_json_details()
     power_draw_W = GPU_TDP_W * usage_percent
     energy_kWh = (power_draw_W * duration_hours) / 1000
-    emissions_g = energy_kWh * carbon_intensity_g_per_kWh
+    emissions_g = energy_kWh * carbon_intensity_g_per_kWh # returns kWh
     return emissions_g
+
+# Adding a new column to the dataframe
+df = pd.DataFrame(v.df)
+df.loc[:, 'carbon_emissions'] = calculate_carbon_emissions(df['gpu_usage'], df['generation_time'])
+plt.scatter(df['gpu_usage'], df['carbon_emissions'])
+plt.xlabel("GPU_usage")
+plt.ylabel("Carbon Emissions")
+plt.title("GPU Usage by Carbon Emissions")
+plt.show()
+formula = 'carbon_emissions ~ gpu_usage + generation_time'
+model = smf.glm(formula=formula, data=df, family=sm.families.Gaussian()) # Gaussian family for linear regression
+result = model.fit()
+print(result.summary())
