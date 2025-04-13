@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spirited Emissions</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Palatino', 'Palatino Linotype', 'Book Antiqua', serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #000000;
+            color: #ffffff;
+        }
+        
+        .content-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+        
+        .calculator-container {
+            width: 50%;
+            background-color: #111111;
+            border-left: 1px solid #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .calculator-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+            color: #ff0000;
+            text-align: center;
+        }
+        
+        .calculator-search {
+            margin-bottom: 20px;
+        }
+        
+        .calculator-search input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background-color: #222;
+            color: white;
+        }
+        
+        .calculator-results {
+            flex: 1;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: #222;
+            overflow-y: auto;
+            color: white;
+        }
+        
+        .results-section {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        
+        .results-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .results-label {
+            font-weight: bold;
+        }
+        
+        .results-value {
+            text-align: right;
+        }
+        
+        .speech-bubble {
+            position: relative;
+            background: #222;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50px;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: #222 transparent;
+        }
+        
+        .quote-reference {
+            font-size: 0.8em;
+            font-style: italic;
+            text-align: right;
+            margin-top: 10px;
+            color: #aaa;
+        }
+        
+        .text-section {
+            background-color: #222;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 200px;
+        }
+        
+        .content-section {
+            margin-bottom: 40px;
+        }
+        
+        .content-section h1, .content-section h2 {
+            margin-bottom: 15px;
+            color: #ff0000;
+        }
+        
+        .content-section p, .content-section li {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+        
+        .content-image {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content Area (Scrollable) -->
+    <div class="content-area">
+        <div class="content-section">
+            <img src="/api/placeholder/800/400" alt="Featured image" class="content-image" />
+            
+            <h1>What is happening</h1>
+            
+            <div class="speech-bubble">
+                <p>"The carbon footprint of AI is becoming a serious concern as models grow larger and more complex."</p>
+                <div class="quote-reference">Source: Green Tech Journal, 2025</div>
+            </div>
+            
+            <div class="speech-bubble">
+                <p>"Training a single large language model can emit as much carbon as five cars over their entire lifetime."</p>
+                <div class="quote-reference">Source: AI Environmental Impact Report, 2024</div>
+            </div>
+            
+            <div class="speech-bubble">
+                <p>"Companies are now focusing on developing more energy-efficient algorithms to reduce the environmental impact of AI."</p>
+                <div class="quote-reference">Source: Tech Sustainability Forum, 2025</div>
+            </div>
+            
+            <div class="speech-bubble">
+                <p>"The next frontier in AI research is not just capability, but sustainability. We need to make these systems more efficient."</p>
+                <div class="quote-reference">Source: AI Research Conference, 2024</div>
+            </div>
+            
+            <h2>How did this start?</h2>
+            <div class="text-section">
+                <!-- Content to be added later -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Calculator Area (Fixed) -->
+    <div class="calculator-container">
+        <div class="calculator-header">
+            <h2>CALCULATOR</h2>
+        </div>
+        
+        <div class="calculator-search">
+            <input type="text" placeholder="Search or enter calculation..." id="searchInput">
+        </div>
+        
+        <div class="calculator-results" id="resultsDisplay">
+            <div class="results-section">
+                <div class="results-row">
+                    <div class="results-label">GPU Percentage:</div>
+                    <div class="results-value" id="gpuPercentage">-</div>
+                </div>
+                <div class="results-row">
+                    <div class="results-label">Time taken:</div>
+                    <div class="results-value" id="timeTaken">-</div>
+                </div>
+                <div class="results-row">
+                    <div class="results-label">Emissions:</div>
+                    <div class="results-value" id="emissions">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Basic functionality for the search input
+        const searchInput = document.getElementById('searchInput');
+        const gpuPercentage = document.getElementById('gpuPercentage');
+        const timeTaken = document.getElementById('timeTaken');
+        const emissions = document.getElementById('emissions');
+        
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                // This is a placeholder for your calculation function
+                // You would replace this with your actual calculation logic
+                const query = searchInput.value;
+                
+                // Simple example of displaying results - replace with your actual function
+                try {
+                    // Simulate calculation results
+                    // Replace these with your actual calculation logic
+                    const gpuUsage = Math.floor(Math.random() * 100) + '%';
+                    const time = (Math.random() * 10).toFixed(2) + ' seconds';
+                    const carbonEmissions = (Math.random() * 5).toFixed(3) + ' kg CO2e';
+                    
+                    // Update the results display
+                    gpuPercentage.textContent = gpuUsage;
+                    timeTaken.textContent = time;
+                    emissions.textContent = carbonEmissions;
+                } catch (error) {
+                    gpuPercentage.textContent = 'Error';
+                    timeTaken.textContent = 'Error';
+                    emissions.textContent = 'Error';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
